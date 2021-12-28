@@ -11,6 +11,8 @@ class StoresViewController: UITableViewController  {
 
     var game = Game(currency: "", currentLowestPrice: 0, developer: "", id: "", name: "", releaseDate: "", stores: [], type: "")
     var searchTerm: String! = ""
+    var searchRegion: String! = ""
+    let customAlert = Alert()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,7 +22,7 @@ class StoresViewController: UITableViewController  {
             "x-rapidapi-key": "c513e51ec6msh882eb3b4c9d62c4p17cedcjsndf0ee44625fc"
         ]
 
-        let request = NSMutableURLRequest(url: NSURL(string: "https://game-prices.p.rapidapi.com/game/\(searchTerm ?? "Minecraft")?region=us&type=game")! as URL,
+        let request = NSMutableURLRequest(url: NSURL(string:"https://game-prices.p.rapidapi.com/game/\(searchTerm ?? "Minecraft")?region=\(searchRegion ?? "eu")&type=game")! as URL,
                                                 cachePolicy: .useProtocolCachePolicy,
                                             timeoutInterval: 10.0)
         request.httpMethod = "GET"
@@ -28,11 +30,19 @@ class StoresViewController: UITableViewController  {
         let session = URLSession.shared
         let dataTask = session.dataTask(with: request as URLRequest) {
             (data, response, error) in
-            guard let httpResponse = response as? HTTPURLResponse,
-                  httpResponse.statusCode == 200 else {
-                return
-            }
+            //guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+             //   print("Error at statusCode")
+              //  let customAlert = MyAlert()
+              //  customAlert.showAlert(with: "Test", message: "LoooL", on: self)
+              //  return
             
+            guard let httpResponse = response as? HTTPURLResponse else { return }
+            if(httpResponse.statusCode != 200){
+                DispatchQueue.main.async {
+                    self.customAlert.showAlert(with: "Game Not Found", message: "The game with name \(self.searchTerm ?? "...") has not been found", on: self)
+                }
+            }
+
             guard let data = data else {
                 print(error.debugDescription)
                 return
@@ -58,6 +68,10 @@ class StoresViewController: UITableViewController  {
         }
     }
     
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+            return "Store prices for the game: \(searchTerm ?? "No game Found")"
+    }
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return game.stores.count
     }
@@ -66,7 +80,7 @@ class StoresViewController: UITableViewController  {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         let store = game.stores[indexPath.row]
         cell.textLabel?.text = store.seller
-        cell.detailTextLabel?.text = String(format: "%f", store.price)
+        cell.detailTextLabel?.text = String(format: "%.2f", store.price)
         cell.imageView?.image =  UIImage(named: store.seller)
         return cell
     }
@@ -78,3 +92,4 @@ class StoresViewController: UITableViewController  {
         }
     }
 }
+
