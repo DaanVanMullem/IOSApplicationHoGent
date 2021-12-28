@@ -10,6 +10,7 @@ import UIKit
 class StoresViewController: UITableViewController  {
 
     var game = Game(currency: "", currentLowestPrice: 0, developer: "", id: "", name: "", releaseDate: "", stores: [], type: "")
+    var searchTerm: String! = ""
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,7 +20,7 @@ class StoresViewController: UITableViewController  {
             "x-rapidapi-key": "c513e51ec6msh882eb3b4c9d62c4p17cedcjsndf0ee44625fc"
         ]
 
-        let request = NSMutableURLRequest(url: NSURL(string: "https://game-prices.p.rapidapi.com/game/minecraft?region=us&type=game")! as URL,
+        let request = NSMutableURLRequest(url: NSURL(string: "https://game-prices.p.rapidapi.com/game/\(searchTerm ?? "Minecraft")?region=us&type=game")! as URL,
                                                 cachePolicy: .useProtocolCachePolicy,
                                             timeoutInterval: 10.0)
         request.httpMethod = "GET"
