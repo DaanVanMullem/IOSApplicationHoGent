@@ -30,11 +30,6 @@ class StoresViewController: UITableViewController  {
         let session = URLSession.shared
         let dataTask = session.dataTask(with: request as URLRequest) {
             (data, response, error) in
-            //guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-             //   print("Error at statusCode")
-              //  let customAlert = MyAlert()
-              //  customAlert.showAlert(with: "Test", message: "LoooL", on: self)
-              //  return
             
             guard let httpResponse = response as? HTTPURLResponse else { return }
             if(httpResponse.statusCode != 200){

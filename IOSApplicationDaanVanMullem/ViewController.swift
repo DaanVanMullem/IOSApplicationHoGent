@@ -65,7 +65,6 @@ extension ViewController: UIPickerViewDataSource{
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return regions[row]
     }
-    
 }
 
 extension ViewController: UIPickerViewDelegate{
@@ -73,7 +72,3 @@ extension ViewController: UIPickerViewDelegate{
         selectedRegion = regions[row]
     }
 }
-
-
-
-
